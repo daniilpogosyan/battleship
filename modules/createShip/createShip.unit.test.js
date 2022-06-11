@@ -1,8 +1,8 @@
 const { describe, test, expect } = require('@jest/globals')
 const createShip = require('./createShip')
 
-// since ship will not expose their coordinates,  to check whether
-// a ship was placed correctly, we need to hit it 
+
+
 describe('hit ships', () => {
   test('single block ship', () => {
     const ship = createShip({ x: 5, y: 3 }, 1, 'vertical');
@@ -72,3 +72,27 @@ describe('sink ships', () => {
   });
 })
 
+
+describe('get ship blocks', () => {
+  test('single block ship', () => {
+    const ship = createShip({ x: 5, y: 3 }, 3, 'horizontal');
+    ship.hit({ x: 5, y: 3});
+    ship.hit({ x: 4, y: 3});
+
+    const shipBlocksAfterHit = [
+      {
+        coords: {x: 5, y: 3},
+        hit: true
+      },
+      {
+        coords: {x: 6, y: 3},
+        hit: false
+      },
+      {
+        coords: {x: 7, y: 3},
+        hit: false
+      }
+    ]
+    expect(ship.getShipBlocks()).toMatchObject(shipBlocksAfterHit)
+  })
+})
