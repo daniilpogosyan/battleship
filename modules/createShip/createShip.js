@@ -44,7 +44,11 @@ function createShip(origin, length, position = 'horizontal') {
 
   const isSunk = () => shipBlocks.every(block => block.hit == true);
 
-  return { hit, isSunk }
+  const getShipBlocks = () => {
+    return JSON.parse(JSON.stringify(shipBlocks))
+  }
+
+  return { hit, isSunk, getShipBlocks }
 }
 
 module.exports = createShip
