@@ -1,54 +1,20 @@
-function createShip(origin, length, position = 'horizontal') {
-  const shipBlocks = [];
-
-  const createShipBlock = (coord) => ({
-    coords: {
-      x: coord.x,
-      y: coord.y
-    },
-    hit: false
-  })
-  
-  const addOffset = (() => {
-    if (position == 'horizontal') 
-    return (offset) => ({
-      x: origin.x + offset,
-      y: origin.y    
-    })
-    
-    else if (position == 'vertical') 
-    return (offset) => ({
-      x: origin.x,
-      y: origin.y + offset    
-    })
-  })();
-  
-  for (let offset = 0; offset < length; offset++) {
-    const shipBlock = createShipBlock(addOffset(offset))
-    shipBlocks.push(shipBlock)
+function createShip(length) {
+  if (length < 1 || length % 1 !== 0) {
+    throw new Error('Invalid ship length')
   }
+  const shipBlocks = Array(length).fill('ok');
 
-
-  const hit = (coords) => {
-    const target = shipBlocks.find((block) => {
-      return (block.coords.x == coords.x 
-           && block.coords.y == coords.y)
-    });
-
-    if (target) {
-      target.hit = true;
+  const hit = (blockIndex) => {
+    if (shipBlocks[blockIndex] === 'ok')  {
+      shipBlocks[blockIndex] = 'hit';
       return true
     }
     return false
   };
 
-  const isSunk = () => shipBlocks.every(block => block.hit == true);
+  const isSunk = () => shipBlocks.every(block => block == 'hit');
 
-  const getShipBlocks = () => {
-    return JSON.parse(JSON.stringify(shipBlocks))
-  }
-
-  return { hit, isSunk, getShipBlocks }
+  return { length, hit, isSunk }
 }
 
 module.exports = createShip
