@@ -1,6 +1,7 @@
 const { describe, test, expect } = require('@jest/globals')
 
 const createGameboard = require('./createGameboard');
+const createShip = require('../createShip/createShip');
 
 const create2DArray = (size, val) => Array.from(
     Array(size), () => Array(size).fill(val));
@@ -139,5 +140,84 @@ describe('place ship', () => {
     } 
 
     expect(gameboard.getGrid()).toEqual(emptyMockGrid);
+  })
+});
+
+describe.only('receive attack', () => {
+  test('miss', () => {
+    const gameboard = createGameboard();
+    expect(gameboard.receiveAttack({x:3, y:4})).toBe('miss');
+
+    const mockGrid = create2DArray(10, null);
+    mockGrid[3][4] = 'miss';
+
+    expect(gameboard.getGrid()).toEqual(mockGrid)
+  });
+
+  test('hit a ship', () => {
+    const gameboard = createGameboard();
+    const ship = createShip(2);
+    gameboard.placeShip(ship, {x: 5, y: 3}, 'vertical');
+    expect(gameboard.receiveAttack({x:5, y:3})).toBe('hit');
+
+    const mockGrid = create2DArray(10, null);
+    mockGrid[5][3] = 'hit';
+    mockGrid[5][4] = {
+      ship: ship,
+      origin: {x: 5, y: 3}
+    };
+
+    expect(ship.isSunk()).toBe(false);
+    expect(gameboard.getGrid()).toEqual(mockGrid);
+  });
+
+  test('with repeatition', () => {
+    const gameboard = createGameboard();
+    const ship = createShip(2);
+    gameboard.placeShip(ship, {x: 5, y: 3}, 'vertical');
+    expect(gameboard.receiveAttack({x:1, y:1})).toBe('miss');
+    expect(gameboard.receiveAttack({x:1, y:1})).toBe(false);
+    
+    expect(gameboard.receiveAttack({x:5, y:3})).toBe('hit');
+    expect(gameboard.receiveAttack({x:5, y:3})).toBe(false);
+
+    const mockGrid = create2DArray(10, null);
+    mockGrid[1][1] = 'miss';
+    mockGrid[5][3] = 'hit';
+    mockGrid[5][4] = {
+      ship: ship,
+      origin: {x: 5, y: 3}
+    };
+
+    expect(ship.isSunk()).toBe(false);
+    expect(gameboard.getGrid()).toEqual(mockGrid);
+  });
+
+  test('with sinking', () => {
+    const gameboard = createGameboard();
+    const ship = createShip(2);
+    gameboard.placeShip(ship, {x: 5, y: 3}, 'vertical');
+    gameboard.receiveAttack({x: 5, y: 3});
+    gameboard.receiveAttack({x: 5, y: 4});
+
+    const mockGrid = create2DArray(10, null);
+    mockGrid[4][2] = 'miss'; mockGrid[5][2] = 'miss'; mockGrid[6][2] = 'miss';
+    mockGrid[4][3] = 'miss'; mockGrid[5][3] = 'hit';  mockGrid[6][3] = 'miss';
+    mockGrid[4][4] = 'miss'; mockGrid[5][4] = 'hit';  mockGrid[6][4] = 'miss';
+    mockGrid[4][5] = 'miss'; mockGrid[5][5] = 'miss'; mockGrid[6][5] = 'miss';
+
+    expect(ship.isSunk()).toBe(true);
+    expect(gameboard.getGrid()).toEqual(mockGrid);
+  });
+
+  test('invalid coords', () => {
+    const gameboard = createGameboard();
+    expect(gameboard.receiveAttack({x:50, y:2})).toBe(false);
+    expect(gameboard.receiveAttack({x:6, y:-23})).toBe(false);
+    expect(gameboard.receiveAttack({x:2.42, y:3})).toBe(false);
+
+    const mockGrid = create2DArray(10, null);
+
+    expect(gameboard.getGrid()).toEqual(mockGrid);
   })
 });
