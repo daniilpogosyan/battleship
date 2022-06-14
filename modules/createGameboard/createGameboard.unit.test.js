@@ -1,6 +1,6 @@
 const { describe, test, expect } = require('@jest/globals')
 
-const createGameboard = () => {};
+const createGameboard = require('./createGameboard');
 
 const create2DArray = (size, val) => Array.from(
     Array(size), () => Array(size).fill(val));
