@@ -67,8 +67,41 @@ function createGameboard () {
     return true
   }
 
+  const revealAdjacentCells = (coords)  => {
+    const adjacentCoords = getAdjacentCells(coords);
+    for (let coords of adjacentCoords) {
+      if (grid[coords.x]?.[coords.y] === null)
+        grid[coords.x][coords.y] = 'miss';
+    }
+  }
 
-  return { getGrid, placeShip }
+  const receiveAttack = (coords) => {
+    if (grid[coords.x]?.[coords.y] === null) {
+      grid[coords.x][coords.y] = 'miss';
+      return 'miss'
+    } else if (grid[coords.x]?.[coords.y] === 'ship') {
+      const targetedUnit = fleet.find(unit => 
+        unit.coords.some((targetCoords) =>
+          coords.x === targetCoords.x && coords.y === targetCoords.y));
+        
+        // hit particular ship block basing on
+        // distance from ship's origin to the attacked block
+      targetedUnit.ship.hit(
+        (coords.y - targetedUnit.coords[0].y)
+        + (coords.x - targetedUnit.coords[0].x));
+        
+      if (targetedUnit.ship.isSunk()) {
+        targetedUnit.coords.forEach(revealAdjacentCells)
+      }
+
+      grid[coords.x][coords.y] = 'hit';
+      return 'hit'
+    }
+    return false
+  }
+
+
+  return { getGrid, placeShip, receiveAttack }
 }
 
 module.exports = createGameboard;
