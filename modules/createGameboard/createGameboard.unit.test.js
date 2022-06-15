@@ -22,12 +22,9 @@ describe('place ship', () => {
     expect(gameboard.placeShip(ship, origin, 'vertical')).toBe(true);
 
     const mockGrid = create2DArray(10, null);
-    mockGrid[origin.x][origin.y] = 
-    mockGrid[origin.x][origin.y + 1] = 
-    mockGrid[origin.x][origin.y + 2] = {
-      origin: {x: origin.x, y: origin.y},
-      ship: ship
-    };
+    mockGrid[origin.x][origin.y]     = 'ship';
+    mockGrid[origin.x][origin.y + 1] = 'ship';
+    mockGrid[origin.x][origin.y + 2] = 'ship';
     
     expect(gameboard.getGrid()).toEqual(mockGrid);
   })
@@ -40,12 +37,9 @@ describe('place ship', () => {
     expect(gameboard.placeShip(ship, origin, 'horizontal')).toBe(true);
 
     const mockGrid = create2DArray(10, null);
-    mockGrid[origin.x][origin.y] = 
-    mockGrid[origin.x + 1][origin.y] = 
-    mockGrid[origin.x + 2][origin.y] = {
-      origin: {x: origin.x, y: origin.y},
-      ship: ship
-    };
+    mockGrid[origin.x][origin.y]     = 'ship';
+    mockGrid[origin.x + 1][origin.y] = 'ship';
+    mockGrid[origin.x + 2][origin.y] = 'ship';
 
     expect(gameboard.getGrid()).toEqual(mockGrid);
   });
@@ -59,8 +53,9 @@ describe('place ship', () => {
     expect(gameboard.placeShip(ship, {x: 8, y: 4}, 'horizontal')).toEqual(false);
     expect(gameboard.placeShip(ship, {x: 5, y: 9}, 'vertical')).toEqual(false);
 
-    const emptyMockGrid = create2DArray(10, null);
-    expect(gameboard.getGrid()).toEqual(emptyMockGrid);
+    const mockGrid = create2DArray(10, null);
+
+    expect(gameboard.getGrid()).toEqual(mockGrid);
   });
 
   
@@ -76,20 +71,14 @@ describe('place ship', () => {
     expect(gameboard.placeShip(ship2, origin2, 'horizontal')).toBe(true);
 
     const mockGrid = create2DArray(10, null);
-    mockGrid[origin1.x][origin1.y] = 
-    mockGrid[origin1.x][origin1.y + 1] = 
-    mockGrid[origin1.x][origin1.y + 2] = {
-      origin: {x: origin1.x, y: origin1.y},
-      ship: ship1
-    };
+    mockGrid[origin1.x][origin1.y]     = 'ship';
+    mockGrid[origin1.x][origin1.y + 1] = 'ship';
+    mockGrid[origin1.x][origin1.y + 2] = 'ship';
 
-    mockGrid[origin2.x][origin2.y] = 
-    mockGrid[origin2.x + 1][origin2.y] = 
-    mockGrid[origin2.x + 2][origin2.y] =
-    mockGrid[origin2.x + 3][origin2.y] = {
-      origin: {x: origin2.x, y: origin2.y},
-      ship: ship2
-    };
+    mockGrid[origin2.x][origin2.y]     = 'ship';
+    mockGrid[origin2.x + 1][origin2.y] = 'ship';
+    mockGrid[origin2.x + 2][origin2.y] = 'ship';
+    mockGrid[origin2.x + 3][origin2.y] = 'ship';
 
     expect(gameboard.getGrid()).toEqual(mockGrid);
     
@@ -108,12 +97,9 @@ describe('place ship', () => {
     expect(gameboard.placeShip(anotherShip, {x: 5, y: 7}, 'vertical')).toBe(false);
 
     const mockGrid = create2DArray(10, null);
-    mockGrid[origin.x][origin.y] = 
-    mockGrid[origin.x][origin.y + 1] = 
-    mockGrid[origin.x][origin.y + 2] = {
-      origin: origin,
-      ship: SucessfullyPlacedship
-    } 
+    mockGrid[origin.x][origin.y]     = 'ship';
+    mockGrid[origin.x][origin.y + 1] = 'ship';
+    mockGrid[origin.x][origin.y + 2] = 'ship';
 
     expect(gameboard.getGrid()).toEqual(mockGrid);
   })
@@ -131,19 +117,16 @@ describe('place ship', () => {
     expect(gameboard.placeShip(anotherShip, {x: 4, y: 6}, 'vertical')).toBe(false);
     expect(gameboard.placeShip(anotherShip, {x: 4, y: 6}, 'vertical')).toBe(false);
 
-    const emptyMockGrid = create2DArray(10, null);
-    emptyMockGrid[origin.x][origin.y] = 
-    emptyMockGrid[origin.x][origin.y + 1] = 
-    emptyMockGrid[origin.x][origin.y + 2] = {
-      origin: origin,
-      ship: SucessfullyPlacedship
-    } 
+    const mockGrid = create2DArray(10, null);
+    mockGrid[origin.x][origin.y]     = 'ship';
+    mockGrid[origin.x][origin.y + 1] = 'ship';
+    mockGrid[origin.x][origin.y + 2] = 'ship';
 
-    expect(gameboard.getGrid()).toEqual(emptyMockGrid);
+    expect(gameboard.getGrid()).toEqual(mockGrid);
   })
 });
 
-describe.only('receive attack', () => {
+describe('receive attack', () => {
   test('miss', () => {
     const gameboard = createGameboard();
     expect(gameboard.receiveAttack({x:3, y:4})).toBe('miss');
@@ -162,10 +145,7 @@ describe.only('receive attack', () => {
 
     const mockGrid = create2DArray(10, null);
     mockGrid[5][3] = 'hit';
-    mockGrid[5][4] = {
-      ship: ship,
-      origin: {x: 5, y: 3}
-    };
+    mockGrid[5][4] = 'ship'
 
     expect(ship.isSunk()).toBe(false);
     expect(gameboard.getGrid()).toEqual(mockGrid);
@@ -184,10 +164,7 @@ describe.only('receive attack', () => {
     const mockGrid = create2DArray(10, null);
     mockGrid[1][1] = 'miss';
     mockGrid[5][3] = 'hit';
-    mockGrid[5][4] = {
-      ship: ship,
-      origin: {x: 5, y: 3}
-    };
+    mockGrid[5][4] = 'ship';
 
     expect(ship.isSunk()).toBe(false);
     expect(gameboard.getGrid()).toEqual(mockGrid);
