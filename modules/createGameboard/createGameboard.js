@@ -11,7 +11,13 @@ function createGameboard () {
     && coords.y < 10 && coords.y >= 0
   )
 
-  const getAdjacentCells = (coords) => {
+  const findShipFrom = (targetCoords) => {
+    return fleet.find(unit => 
+      unit.coords.some((coords) =>
+        coords.x === targetCoords.x && coords.y === targetCoords.y));
+  }
+
+  const getAdjacentCoords = (coords) => {
     const adjacentCoords = [];
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {
@@ -25,15 +31,14 @@ function createGameboard () {
   
   const cellAvailable = (coords) => {
     if (grid[coords.x]?.[coords.y] !== null) return false
-
-    const adjacentCoords = getAdjacentCells(coords);
-    for (let coords of adjacentCoords) {
-        if (grid[coords.x]?.[coords.y] === 'ship')
-          return false 
+    const adjacentCoords = getAdjacentCoords(coords);
+    for (let adjacentCoord of adjacentCoords) {
+      if(findShipFrom(adjacentCoord))
+        return false
     }
-
     return true
   }
+
 
   const placeShip = (ship, origin, position) => {
     const addOffset = (() => {
@@ -52,12 +57,10 @@ function createGameboard () {
 
     const wouldbeShipCoords = [];
     for (let offset = 0; offset < ship.length; offset++) {
-      const cell = addOffset(offset);
-      if (!cellAvailable(cell)) return false
-      wouldbeShipCoords.push(cell);
+      const coords = addOffset(offset);
+      if (!cellAvailable(coords)) return false
+      wouldbeShipCoords.push(coords);
     }
-
-    wouldbeShipCoords.forEach(coords => grid[coords.x][coords.y] = 'ship');
 
     fleet.push({
       coords: wouldbeShipCoords,
@@ -68,7 +71,7 @@ function createGameboard () {
   }
 
   const revealAdjacentCells = (coords)  => {
-    const adjacentCoords = getAdjacentCells(coords);
+    const adjacentCoords = getAdjacentCoords(coords);
     for (let coords of adjacentCoords) {
       if (grid[coords.x]?.[coords.y] === null)
         grid[coords.x][coords.y] = 'miss';
@@ -77,27 +80,23 @@ function createGameboard () {
 
   const receiveAttack = (coords) => {
     if (grid[coords.x]?.[coords.y] === null) {
-      grid[coords.x][coords.y] = 'miss';
-      return 'miss'
-    } else if (grid[coords.x]?.[coords.y] === 'ship') {
-      const targetedUnit = fleet.find(unit => 
-        unit.coords.some((targetCoords) =>
-          coords.x === targetCoords.x && coords.y === targetCoords.y));
-        
-        // hit particular ship block basing on
-        // distance from ship's origin to the attacked block
-      targetedUnit.ship.hit(
-        (coords.y - targetedUnit.coords[0].y)
-        + (coords.x - targetedUnit.coords[0].x));
-        
-      if (targetedUnit.ship.isSunk()) {
-        targetedUnit.coords.forEach(revealAdjacentCells)
+      let mark;
+      const targetedUnit = findShipFrom(coords);
+      if (targetedUnit) {
+        targetedUnit.ship.hit(
+          (coords.y - targetedUnit.coords[0].y)
+          + (coords.x - targetedUnit.coords[0].x)
+        );
+        if (targetedUnit.ship.isSunk()) 
+          targetedUnit.coords.forEach(revealAdjacentCells);
+        mark = 'hit';
+      } else {
+        mark = 'miss';
       }
-
-      grid[coords.x][coords.y] = 'hit';
-      return 'hit'
-    }
-    return false
+      grid[coords.x][coords.y] = mark;
+      return mark
+    } else 
+      return false
   }
 
 
