@@ -99,8 +99,9 @@ function createGameboard () {
       return false
   }
 
+  const fleetIsSunk = () => fleet.every(unit => unit.ship.isSunk())
 
-  return { getGrid, placeShip, receiveAttack }
+  return { getGrid, placeShip, receiveAttack, fleetIsSunk }
 }
 
 module.exports = createGameboard;

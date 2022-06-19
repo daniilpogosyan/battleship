@@ -150,3 +150,35 @@ describe('receive attack', () => {
     expect(gameboard.getGrid()).toEqual(mockGrid);
   })
 });
+
+describe("all the ships are sunk", () => {
+  test("only one ship on the gameboard", () => {
+    const gameboard = createGameboard();
+    const ship = createShip(1);
+    gameboard.placeShip(ship, {x: 2, y: 1}, 'vertical');
+
+    expect(gameboard.fleetIsSunk()).toBe(false);
+    gameboard.receiveAttack({x: 2, y: 1});
+    expect(gameboard.fleetIsSunk()).toBe(true);
+  });
+
+  test("multiple ships on the gameboard", () => {
+    const gameboard = createGameboard();
+    gameboard.placeShip(createShip(1), {x: 0, y: 1}, 'horizontal');
+    gameboard.placeShip(createShip(2), {x: 3, y: 1}, 'vertical');
+
+    const hits = [
+      {x: 0, y: 1},
+      {x: 3, y: 1},
+      {x: 3, y: 2},
+    ];
+    
+    hits.forEach((coords, index) => {
+      gameboard.receiveAttack(coords);
+      if (index === hits.length - 1)
+        expect(gameboard.fleetIsSunk()).toBe(true)
+      else 
+        expect(gameboard.fleetIsSunk()).toBe(false)
+    })
+  })
+})
