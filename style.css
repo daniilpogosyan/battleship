@@ -1,0 +1,43 @@
+.content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+
+.side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  grid-auto-flow:column;
+  width: 500px;
+  height: 500px;
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+}
+
+.cell {
+  background-color: rgb(15, 119, 224);
+}
+
+.cell--clickable:hover,
+.cell--miss {
+  opacity: 0.6;
+}
+
+.cell--hit {
+  background-color: red;
+}
