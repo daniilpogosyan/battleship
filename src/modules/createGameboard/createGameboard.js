@@ -6,6 +6,9 @@ function createGameboard () {
     return Array.from(grid, (arr1D) => [...arr1D])
   }
 
+  getFleetCoords = () => fleet.map(unit => {
+    return JSON.parse(JSON.stringify(unit.coords))})
+
   const coordsExist = (coords) => (
     coords.x < 10 && coords.x >= 0
     && coords.y < 10 && coords.y >= 0
@@ -127,7 +130,7 @@ function createGameboard () {
 
   const fleetIsSunk = () => fleet.every(unit => unit.ship.isSunk())
 
-  return { getGrid, placeShip, receiveAttack, fleetIsSunk, placeShipRandomly }
+  return { getGrid, placeShip, receiveAttack, fleetIsSunk, placeShipRandomly, getFleetCoords}
 }
 
 module.exports = createGameboard;

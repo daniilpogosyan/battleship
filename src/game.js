@@ -39,12 +39,15 @@ const game = (() => {
       console.log(`gameover, enemy win`)
     }
 
-    PubSub.publish('grids updated',
+    PubSub.publishSync('grids updated',
     {playerGrid: playerGameboard.getGrid(), enemyGrid: enemyGameboard.getGrid()})
+
+    PubSub.publishSync('fleet updated', playerGameboard.getFleetCoords())
   }
 
-  PubSub.publish('grids updated',
+  PubSub.publishSync('grids updated',
     {playerGrid: playerGameboard.getGrid(), enemyGrid: enemyGameboard.getGrid()})
+  PubSub.publishSync('fleet updated', playerGameboard.getFleetCoords())
 
   PubSub.subscribe('enemy cell attacked', (msg, coords) => game.playTurn(coords))
 
