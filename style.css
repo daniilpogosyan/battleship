@@ -41,3 +41,6 @@
 .cell--hit {
   background-color: red;
 }
+.cell--ship:not(.cell--hit) {
+  background-color: #0f0;
+}
