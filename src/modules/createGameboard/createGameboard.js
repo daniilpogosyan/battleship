@@ -70,6 +70,32 @@ function createGameboard () {
     return true
   }
 
+  const placeShipRandomly = (ship) => {   
+    const pullRandomItemFrom = (arr) =>
+       arr.splice(Math.random() * arr.length, 1)[0];
+
+    const availableCells = [];
+    for (let x = 0; x < 10; x++) {
+      for (let y = 0; y < 10; y++) {
+        const coords = {x: x, y: y};
+        if (cellAvailable(coords))
+          availableCells.push(coords)
+      }
+    }
+    
+
+    let shipIsPlaced = false;
+    do {
+      const positions = ['vertical', 'horizontal'];
+      const origin = pullRandomItemFrom(availableCells);
+      shipIsPlaced = placeShip(ship, origin, pullRandomItemFrom(positions));
+      if (!shipIsPlaced)
+        shipIsPlaced = placeShip(ship, origin, pullRandomItemFrom(positions));
+    } while (!shipIsPlaced || ((!shipIsPlaced) && availableCells.length > 0))
+
+    return shipIsPlaced
+  }
+
   const revealAdjacentCells = (coords)  => {
     const adjacentCoords = getAdjacentCoords(coords);
     for (let coords of adjacentCoords) {
@@ -101,7 +127,7 @@ function createGameboard () {
 
   const fleetIsSunk = () => fleet.every(unit => unit.ship.isSunk())
 
-  return { getGrid, placeShip, receiveAttack, fleetIsSunk }
+  return { getGrid, placeShip, receiveAttack, fleetIsSunk, placeShipRandomly }
 }
 
 module.exports = createGameboard;

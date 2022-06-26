@@ -5,11 +5,16 @@ import PubSub from 'pubsub-js';
 
 const game = (() => {
   function placeShipsDefault(gameboard) {
-    gameboard.placeShip(createShip(1), {x: 1, y: 1}, 'vertical');
-    gameboard.placeShip(createShip(2), {x: 7, y: 2}, 'vertical');
-    gameboard.placeShip(createShip(2), {x: 7, y: 6}, 'vertical');
-    gameboard.placeShip(createShip(3), {x: 4, y: 1}, 'vertical');
-    gameboard.placeShip(createShip(4), {x: 1, y: 6}, 'horizontal');
+    gameboard.placeShipRandomly(createShip(4))
+    gameboard.placeShipRandomly(createShip(2))
+    gameboard.placeShipRandomly(createShip(3))
+    gameboard.placeShipRandomly(createShip(3))
+    gameboard.placeShipRandomly(createShip(2))
+    gameboard.placeShipRandomly(createShip(2))
+    gameboard.placeShipRandomly(createShip(1))
+    gameboard.placeShipRandomly(createShip(1))
+    gameboard.placeShipRandomly(createShip(1))
+    gameboard.placeShipRandomly(createShip(1))
   }
 
   const playerGameboard = createGameBoard();
