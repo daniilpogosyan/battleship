@@ -32,11 +32,13 @@ const game = (() => {
     if (!validAttack)  return
 
     if (enemyGameboard.fleetIsSunk()) {
-      console.log(`gameover, you win`)        
+      console.log(`gameover, you win`)         
+      PubSub.publish('gameover', player.getName())
     }
     enemy.attack();
     if (playerGameboard.fleetIsSunk()) {
       console.log(`gameover, enemy win`)
+      PubSub.publish('gameover', enemy.getName())
     }
 
     PubSub.publishSync('grids updated',

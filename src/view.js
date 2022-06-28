@@ -1,10 +1,14 @@
 import PubSub from "pubsub-js";
 
 const view = (()=> {
+  const domLog = document.querySelector('.log');
   const domPlayerGrid = document.querySelector('#player-grid');
   const domEnemyGrid = document.querySelector('#enemy-grid');
 
-  
+  const attackHandler = (event) => 
+    PubSub.publish('enemy cell attacked',
+      {x: +event.target.dataset.x, y: +event.target.dataset.y});
+
   const renderGrid = (msg, {playerGrid, enemyGrid}) => {
     const grids = new Map();
     grids.set(playerGrid, domPlayerGrid);
@@ -20,9 +24,7 @@ const view = (()=> {
           domCell.dataset.y = j;
           if (arrGrid[i][j] === null && arrGrid === enemyGrid) {
             domCell.classList.add('cell--clickable');
-            domCell.addEventListener('click', () => {
-              PubSub.publish('enemy cell attacked', {x: i, y: j});
-            });
+            domCell.addEventListener('click', attackHandler);
           } else if (arrGrid[i][j] === 'miss') {
             domCell.classList.add('cell--miss');
           } else if (arrGrid[i][j] === 'hit') {
@@ -44,6 +46,21 @@ const view = (()=> {
       domCell.classList.add('cell--ship');
       }))
   }
+
+  const announceWinner = (winnerName) => {
+    domLog.textContent = `${winnerName} won!`;
+  }
+  const disableEnemyGrid = () => {
+    domEnemyGrid.querySelectorAll('.cell--clickable')
+      .forEach(domCell => {
+        domCell.removeEventListener('click', attackHandler);
+        domCell.classList.remove('cell--clickable');
+      })
+  }
+  PubSub.subscribe('gameover', (msg, winner) => {
+    announceWinner(winner);
+    disableEnemyGrid();
+  })
   
   return { renderGrid, renderFleet }
 })()

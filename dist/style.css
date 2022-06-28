@@ -1,8 +1,15 @@
-.content {
+.sides {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 50px;
+}
+
+.log {
+  height: 50px;
+  font-size: 40px;
+  margin: 10px 0;
+  text-align: center;
 }
 
 .side {
