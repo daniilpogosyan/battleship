@@ -9,32 +9,38 @@ const view = (()=> {
     PubSub.publish('enemy cell attacked',
       {x: +event.target.dataset.x, y: +event.target.dataset.y});
 
-  const renderGrid = (msg, {playerGrid, enemyGrid}) => {
-    const grids = new Map();
-    grids.set(playerGrid, domPlayerGrid);
-    grids.set(enemyGrid, domEnemyGrid);
+  const renderGrid = (arrGrid, domGrid, clickable) => {
+    const createCell = (i, j) => {
+      const domCell = document.createElement('div');
+      domCell.classList.add('cell');        
+      domCell.dataset.x = i;
+      domCell.dataset.y = j;
 
-    for (const [arrGrid, domGrid] of grids) {
-      domGrid.innerHTML = "";
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-          const domCell = document.createElement('div');
-          domCell.classList.add('cell');        
-          domCell.dataset.x = i;
-          domCell.dataset.y = j;
-          if (arrGrid[i][j] === null && arrGrid === enemyGrid) {
-            domCell.classList.add('cell--clickable');
-            domCell.addEventListener('click', attackHandler);
-          } else if (arrGrid[i][j] === 'miss') {
-            domCell.classList.add('cell--miss');
-          } else if (arrGrid[i][j] === 'hit') {
-            domCell.classList.add('cell--hit');
-          }
-          domGrid.append(domCell);
-        }
+      if (clickable == true && arrGrid[i][j] === null) {
+        domCell.classList.add('cell--clickable');
+        domCell.addEventListener('click', attackHandler);
+      } else if (arrGrid[i][j] === 'miss') {
+        domCell.classList.add('cell--miss');
+      } else if (arrGrid[i][j] === 'hit') {
+        domCell.classList.add('cell--hit');
+      }
+
+      return domCell
+    }
+
+    domGrid.innerHTML = "";
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        const domCell = createCell(i, j);
+        domGrid.append(domCell);
       }
     }
   }
+
+  const renderGrids = (msg, {playerGrid, enemyGrid}) => {
+    renderGrid(playerGrid, domPlayerGrid);
+    renderGrid(enemyGrid, domEnemyGrid, true);
+  } 
 
 
   const renderFleet = (msg, fleetCoords) => {
@@ -62,10 +68,10 @@ const view = (()=> {
     disableEnemyGrid();
   })
   
-  return { renderGrid, renderFleet }
+  return { renderGrids, renderFleet }
 })()
 
-PubSub.subscribe('grids updated', view.renderGrid)
+PubSub.subscribe('grids updated', view.renderGrids)
 PubSub.subscribe('fleet updated', view.renderFleet)
 
 export default view
