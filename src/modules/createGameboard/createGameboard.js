@@ -47,13 +47,13 @@ function createGameboard () {
     const addOffset = (() => {
       if (position == 'horizontal') {
         return (offset) => ({
-          x: origin.x + offset,
-          y: origin.y    
+          x: +origin.x + offset,
+          y: +origin.y    
         })
       } else if (position == 'vertical') {
         return (offset) => ({
-          x: origin.x,
-          y: origin.y + offset    
+          x: +origin.x,
+          y: +origin.y + offset    
         })
       }
     })();
