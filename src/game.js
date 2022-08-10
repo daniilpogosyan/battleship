@@ -4,17 +4,32 @@ const createPlayer = require('./modules/createPlayer/createPlayer');
 import PubSub from 'pubsub-js';
 
 const game = (() => {
+  const fleetConfig = [
+    {
+      length: 4,
+      count: 1
+    },
+    {
+      length: 3,
+      count: 2
+    },
+    {
+      length: 2,
+      count: 3
+    },
+    {
+      length: 1,
+      count: 4
+    }
+  ];
+
   function placeShipsDefault(gameboard) {
-    gameboard.placeShipRandomly(createShip(4))
-    gameboard.placeShipRandomly(createShip(2))
-    gameboard.placeShipRandomly(createShip(3))
-    gameboard.placeShipRandomly(createShip(3))
-    gameboard.placeShipRandomly(createShip(2))
-    gameboard.placeShipRandomly(createShip(2))
-    gameboard.placeShipRandomly(createShip(1))
-    gameboard.placeShipRandomly(createShip(1))
-    gameboard.placeShipRandomly(createShip(1))
-    gameboard.placeShipRandomly(createShip(1))
+    for (let shipTypeIndex = 0; shipTypeIndex < fleetConfig.length; shipTypeIndex++) {
+      const shipType = fleetConfig[shipTypeIndex];
+      for(let shipCount = 0; shipCount < shipType.count; shipCount++) {
+        gameboard.placeShipRandomly(createShip(shipType.length))    
+      }
+    }
   }
 
   const playerGameboard = createGameBoard();
