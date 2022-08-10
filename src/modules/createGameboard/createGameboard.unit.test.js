@@ -182,3 +182,21 @@ describe("all the ships are sunk", () => {
     })
   })
 })
+
+describe("clear fleet", () => {
+  test("of no ship", () => {
+    const gameboard = createGameboard();
+    gameboard.clearFleet();
+    expect(gameboard.getFleetCoords()).toEqual([]);
+  })
+
+  test("of several ships", () => {
+    const gameboard = createGameboard();
+    const ship1 = {length: 3}
+    const ship2 = {length: 4}
+    gameboard.placeShip(ship1, {x: 3, y: 3}, 'horizontal');
+    gameboard.placeShip(ship2, {x: 6, y: 5}, 'vertical');
+    gameboard.clearFleet();
+    expect(gameboard.getFleetCoords()).toEqual([]);
+  })
+})

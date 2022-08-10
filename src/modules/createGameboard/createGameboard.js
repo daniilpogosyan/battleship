@@ -130,7 +130,17 @@ function createGameboard () {
 
   const fleetIsSunk = () => fleet.every(unit => unit.ship.isSunk())
 
-  return { getGrid, placeShip, receiveAttack, fleetIsSunk, placeShipRandomly, getFleetCoords}
+  const clearFleet = () => fleet.splice(0, fleet.length)
+
+  return {
+    getGrid,
+    placeShip,
+    receiveAttack,
+    fleetIsSunk,
+    placeShipRandomly,
+    getFleetCoords,
+    clearFleet
+  }
 }
 
 module.exports = createGameboard;
