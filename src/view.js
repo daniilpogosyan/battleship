@@ -2,8 +2,12 @@ import PubSub from "pubsub-js";
 
 const view = (()=> {
   const domLog = document.querySelector('.log');
+  const domFleetList = document.querySelector("#fleet-list");
+  const rotateBtn = document.querySelector('#rotate-btn');
   const domPlayerGrid = document.querySelector('#player-grid');
   const domEnemyGrid = document.querySelector('#enemy-grid');
+
+  let selectedShip;
 
   const attackHandler = (event) => 
     PubSub.publish('enemy cell attacked',
@@ -15,7 +19,7 @@ const view = (()=> {
       domCell.classList.add('cell');        
       domCell.dataset.x = i;
       domCell.dataset.y = j;
-
+      domCell.addEventListener('click', domPlaceShip)
       if (clickable == true && arrGrid[i][j] === null) {
         domCell.classList.add('cell--clickable');
         domCell.addEventListener('click', attackHandler);
@@ -53,6 +57,50 @@ const view = (()=> {
       }))
   }
 
+  function domPlaceShip(e) {
+    if (selectedShip === null)
+      return
+      
+    const origin = {
+      x: e.target.dataset.x,
+      y: e.target.dataset.y
+    }
+
+    PubSub.publish('ship will be placed', {...selectedShip, origin});
+    // selectedShip = null;
+  }
+
+  const renderFleetPanel = (fleet) => {
+    domFleetList.innerHTML = "";
+    domFleetList.append(...fleet.map(ship => {
+      const fleetItem = document.createElement('div');
+      fleetItem.classList.add('fleet-item');
+      
+      const leftShips = document.createTextNode(`${ship.count} x `);
+      
+      const domShip = document.createElement('div');
+      domShip.classList.add('ship')
+      for (let i = 0; i < ship.length; i++) {
+        const cell = document.createElement('span');
+        cell.classList.add('cell');
+        domShip.append(cell)
+      }
+
+      if (ship.count > 0) {
+        domShip.addEventListener('click', (e) => {
+          selectedShip = {
+            length: ship.length,
+            position: 'horizontal'
+          }
+        })
+      }
+
+      fleetItem.append(leftShips, domShip);
+
+      return fleetItem
+    }))
+  }
+
   const announceWinner = (winnerName) => {
     domLog.textContent = `${winnerName} won!`;
   }
@@ -68,6 +116,14 @@ const view = (()=> {
     disableEnemyGrid();
   })
   
+  PubSub.subscribe('available fleet updated', (msg, availableFleet) => {
+    renderFleetPanel(availableFleet)
+  })
+
+  rotateBtn.addEventListener('click', () => {
+    selectedShip.position = selectedShip.position === 'horizontal'
+      ? 'vertical' : 'horizontal';
+  })
   return { renderGrids, renderFleet }
 })()
 

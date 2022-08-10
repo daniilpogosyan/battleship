@@ -16,7 +16,6 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
@@ -34,9 +33,6 @@
   justify-content: center;
   align-items: center;
   border: 1px solid #000;
-}
-
-.cell {
   background-color: rgb(15, 119, 224);
 }
 
@@ -50,4 +46,26 @@
 }
 .cell--ship:not(.cell--hit) {
   background-color: #0f0;
+}
+
+#fleet-panel .cell {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+}
+
+#fleet-panel {
+  align-self: baseline;
+  display: flex;
+  margin-top: 20px;
+  font-size: 24px;
+}
+
+.fleet-item {
+  display: flex;
+  align-items: center;
+}
+
+.ship {
+  margin: 10px;
 }
